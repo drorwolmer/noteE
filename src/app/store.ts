@@ -1,10 +1,16 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
+import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
+import todoReducer, { saveStateToLocalStorage } from "./todoSlice";
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
+    todo: todoReducer,
   },
+});
+
+store.subscribe(() => {
+  saveStateToLocalStorage({
+    todo: store.getState().todo,
+  });
 });
 
 export type AppDispatch = typeof store.dispatch;

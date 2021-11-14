@@ -1,39 +1,160 @@
-.App {
-  text-align: center;
+@import url("https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap");
+body,
+html {
+  background: #23546a;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+html {
+  height: 100%;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-float infinite 3s ease-in-out;
-  }
-}
-
-.App-header {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+body {
+  height: 100%;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  align-content: center;
+  display: flex;
+}
+#root {
+  align-self: center;
+  background: green;
+  max-width: 600px;
+  width: 600px;
+}
+.App {
+  background: #23546a;
+  color: #333;
+  overflow: hidden;
+  /* border: 1px solid red; */
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px #00000065;
 }
 
-.App-link {
-  color: rgb(112, 76, 182);
+.row.upper-gutter .text {
+  padding: 1em 0;
+  font-size: 2em;
+  justify-content: center;
+  flex: 1 0 0;
+  padding-left: 1em;
 }
 
-@keyframes App-logo-float {
-  0% {
-    transform: translateY(0);
+.left-gutter {
+  width: 75px;
+  min-width: 75px;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  border-right: 1px solid red;
+}
+.left-gutter .hole {
+  opacity: 1;
+  margin-left: 5px;
+  height: 15px;
+  width: 20px;
+  border-radius: 10px;
+  opacity: 0.25;
+  background: black;
+}
+
+.left-gutter .hole2 {
+  position: absolute;
+  opacity: 1;
+  height: 2px;
+  width: 20px;
+  border-radius: 50%;
+  opacity: 0.5;
+  background: black;
+}
+
+.row {
+  background: #fff;
+  display: flex;
+  border-bottom: 1px solid rgb(110, 178, 255);
+  font-family: "Architects Daughter", cursive;
+}
+
+.row .text {
+  white-space: nowrap;
+  flex: 1 0 0;
+  min-width: 10px;
+  text-align: left;
+}
+.row .bullet,
+.row .text {
+  position: relative;
+  align-self: center;
+  padding: 0.25em 0;
+  font-size: 1.2em;
+}
+.row .text .line-through {
+  width: 100%;
+  height: 2px;
+  top: 0.9em;
+  opacity: 0.6;
+  padding-right: 10px;
+  background: #000;
+  position: absolute;
+  margin-left: -5px;
+}
+
+.row .bullet {
+  font-weight: bold;
+  padding: 0 1em;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+.row .bullet .hover {
+  display: none;
+  font-size: 2em;
+  position: absolute;
+  margin-left: 2px;
+  margin-top: -14px;
+  opacity: 0.8;
+}
+.row .bullet:hover .hover {
+  display: block;
+  opacity: 0.5;
+}
+.row.completed .bullet .hover {
+  display: block;
+  opacity: 1;
+}
+
+.row .tag {
+  background: rgb(255, 255, 102);
+  padding: 0 0.2em;
+  margin: 0 0.2em;
+}
+
+.row.selected .tag {
+  background: none;
+}
+.row.completed .text {
+  text-decoration: line-through;
+}
+
+.row.selected,
+.row:hover {
+  font-weight: bold;
+}
+
+.row.selected .text {
+  text-decoration: none !important;
+  font-weight: bold;
+}
+
+[contenteditable] {
+  outline: 0px solid transparent;
+}
+@media only screen and (max-width: 400px) {
+  body {
+    padding: 5px;
   }
-  50% {
-    transform: translateY(10px);
+  .left-gutter {
+    display: none;
   }
-  100% {
-    transform: translateY(0px);
+  .row .text {
+    font-size: 1em;
   }
 }
