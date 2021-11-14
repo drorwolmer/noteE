@@ -4,6 +4,7 @@
 
 All notes are saved to `LocalStorage`
 
-https://haminet.fm/notee
+`main` branch is deployed to https://haminet.fm/
 
-![](https://i.ibb.co/rtP9T67/image.png)
+<img src="https://i.ibb.co/rtP9T67/image.png" width="400">
+
