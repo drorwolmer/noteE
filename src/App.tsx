@@ -6,6 +6,11 @@ import React, {
   useEffect,
   useRef,
 } from "react";
+import { DndContext, DragEndEvent } from "@dnd-kit/core";
+import { useSortable, SortableContext, arrayMove } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+
 import { useSelector } from "react-redux";
 import "./App.css";
 import { useAppDispatch } from "./app/hooks";
@@ -17,6 +22,7 @@ import {
   selectTodos,
   setTitle,
   updateTodo,
+  updateTodos,
 } from "./app/todoSlice";
 
 export type Todo = {
@@ -45,6 +51,14 @@ export const TodoRow = ({
   const dispatch = useAppDispatch();
   const { bullet, text } = todo;
   const divTextRef = useRef<HTMLDivElement>(null);
+
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: todo.index.toString() });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
 
   const [autoFocused, setAutoFocused] = useState(false);
   useEffect(() => {
@@ -92,10 +106,9 @@ export const TodoRow = ({
 
   useEffect(() => {
     if (divTextRef.current) {
-      divTextRef.current.innerHTML = text.replace(
-        TAG_REGEX,
-        "$1<span class='tag'>$2</span>$3"
-      );
+      divTextRef.current.innerHTML = text
+        .toString()
+        .replace(TAG_REGEX, "$1<span class='tag'>$2</span>$3");
     }
   }, [divTextRef, text]);
 
@@ -126,8 +139,8 @@ export const TodoRow = ({
   );
 
   return (
-    <div className={cs}>
-      <div className="left-gutter">
+    <div className={cs} ref={setNodeRef} style={style}>
+      <div className="left-gutter" {...attributes} {...listeners}>
         <div className="hole2"></div>
         <div className="hole"></div>
       </div>
@@ -229,6 +242,21 @@ function App() {
     dispatch(addEmptyTodo());
   }, [dispatch]);
 
+  const handleOnDragEnd = useCallback(
+    (e: DragEndEvent) => {
+      if (e.over === null) {
+        return;
+      }
+      const oldIndex = rows.findIndex(
+        (r) => r.index.toString() === e.active.id
+      );
+      const newIndex = rows.findIndex((r) => r.index.toString() === e.over?.id);
+      console.error(e.active.id, e.over?.id, oldIndex, newIndex);
+      dispatch(updateTodos(arrayMove(rows, oldIndex, newIndex)));
+    },
+    [dispatch, rows]
+  );
+
   return (
     <div className="App">
       <div className="rows">
@@ -247,17 +275,24 @@ function App() {
             <div className="text">{title}</div>
           </ContentEditableText>
         </div>
-        {rows.map((row, position) => (
-          <TodoRow
-            key={row.index}
-            todo={row}
-            onSelect={() => setCurrentEditingRow(row.index)}
-            selected={row.index === currentEditingRow}
-            onBlur={() => setCurrentEditingRow(undefined)}
-            onEnterPress={handleEnterPress}
-            position={position}
-          />
-        ))}
+        <DndContext
+          onDragEnd={handleOnDragEnd}
+          modifiers={[restrictToVerticalAxis]}
+        >
+          <SortableContext items={rows.map((r) => r.index.toString())}>
+            {rows.map((row, position) => (
+              <TodoRow
+                key={row.index}
+                todo={row}
+                onSelect={() => setCurrentEditingRow(row.index)}
+                selected={row.index === currentEditingRow}
+                onBlur={() => setCurrentEditingRow(undefined)}
+                onEnterPress={handleEnterPress}
+                position={position}
+              />
+            ))}
+          </SortableContext>
+        </DndContext>
       </div>
     </div>
   );
