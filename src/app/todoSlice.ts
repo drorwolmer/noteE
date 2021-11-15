@@ -12,12 +12,14 @@ export interface TodoState {
   title: string;
   initialized: boolean;
   todos: Todo[];
+  focusedTodo: number | undefined;
 }
 
 const initialState: TodoState = {
   title: "",
   todos: [],
   initialized: false,
+  focusedTodo: undefined,
 };
 
 export const todoSlice = createSlice({
@@ -38,11 +40,13 @@ export const todoSlice = createSlice({
       state.todos = state.todos.filter((t) => t.index !== action.payload);
     },
     addEmptyTodo: (state) => {
-      state.todos.push({
+      const newTodo: Todo = {
         bullet: "O",
         text: " ",
         index: new Date().getTime(),
-      });
+      };
+      state.todos.push(newTodo);
+      state.focusedTodo = newTodo.index;
     },
     setInitialized: (state, action: PayloadAction<boolean>) => {
       state.initialized = action.payload;
@@ -117,5 +121,6 @@ export const saveStateToLocalStorage = (state: RootState) => {
 
 export const selectTodos = (state: RootState) => state.todo.todos;
 export const selectTitle = (state: RootState) => state.todo.title;
+export const selectFocusedTodo = (state: RootState) => state.todo.focusedTodo;
 
 export default todoSlice.reducer;
